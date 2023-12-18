@@ -12,9 +12,9 @@ public class Player
     public int NextLevel = 0;
     //stats
     public int FullHealth = 100;
-    public static int minDamage = 5;
-    public static int maxDamage = 30;
-    
+    public static int MinDamage = 5;
+    public static int MaxDamage = 30;
+    public static uint Coins = 0;
     
     void LevelUpStats(ref int minDamage, ref int maxDamage)
     {
