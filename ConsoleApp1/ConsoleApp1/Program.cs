@@ -3,11 +3,18 @@
 
 
 Random damage = new Random();
-Shop sword = new Shop
+Items sword = new Items
 {
     Id = 0,
     name = "Sword",
     price = 5,
+};
+Potions potion = new Potions
+{
+    Id = 100,
+    name = "health potion",
+    price = 10,
+    count = 0,
 };
 
 Player bob = new Player
@@ -19,6 +26,8 @@ Player bob = new Player
     FullHealth = 100,
     
 };
+
+
 
 void Regeneration()
 {
@@ -32,19 +41,50 @@ void Regeneration()
         bob.Health = bob.FullHealth;
     }
 }
+void Heal()
+{
+    if (potion.count > 0)
+    {
+        {
+
+        }
+        potion.count -= 1;
+        bob.Health += 50;
+        Console.WriteLine($"Вы лечились, у вас осталось {bob.Health} Hp");
+        if (bob.Health > bob.FullHealth)
+        {
+            bob.Health = bob.FullHealth;
+        }
+    } else if (potion.count <= 0)
+    {
+        Console.WriteLine("У вас нет зелья? выполните другое действие");
+    }
+    Console.WriteLine($"У вас осталось {potion.count} банок зелья");
+}
 
 void Fight()
 {
+    
     Console.WriteLine(
         $"Вы вошли на поле боя, ваш противник: {Spider._name}, у него {bob.Health} HP и {bob.Damage} урона");
     Console.WriteLine("Бой начинается");
     while (bob.Health > 0 && Spider.Health_Spider > 0)
     {
+        string? heal;
         Console.WriteLine("Паук атакует");
         bob.Health -= Spider.Damage_Spider;
         Console.WriteLine($"Вас атаковал {Spider._name}, у вас осталось {bob.Health} Hp");
-        Spider.Health_Spider -= bob.Damage;
-        Console.WriteLine($"Вы атаковали {Spider._name}, у вас осталось {Spider.Health_Spider} Hp");
+        Console.WriteLine("Ваш ход, что вы выберете? Введите a, чтобы ударить и h, чтобы вылечиться");
+        heal = Console.ReadLine();
+        if (heal == "a")
+        {
+            Spider.Health_Spider -= bob.Damage;
+            Console.WriteLine($"Вы атаковали {Spider._name}, у противника осталось {Spider.Health_Spider} Hp");
+        } else if (heal == "h")
+        {
+            Heal();
+        }
+        
     }
 
     if (bob.Health > 0 && Spider.Health_Spider <= 0)
@@ -75,6 +115,7 @@ void Shop()
     string? choice;
     Console.WriteLine("Чтобы посмотреть предметы - нажмите 1");
     Console.WriteLine("Чтобы выйти из магазина - 2");
+    Console.WriteLine("Если хотите увидеть зелья - введите 3");
     choice = Console.ReadLine();
     switch (choice)
     {
@@ -89,21 +130,46 @@ void Shop()
                 if (Player.Coins >= sword.price)
                 {
                     Player.Coins -= 5;
-                    sword.price += 2;
-                } 
+                    Player.MaxDamage += 2;
+                    Player.MinDamage += 2;
+                }
                 else if (Player.Coins < sword.price)
                 {
                     Console.WriteLine("У вас недостаточно средств");
-                } 
+                }
+                
             }
 
-            Player.MaxDamage += 2;
-            Player.MinDamage += 2;
             break;
+
 
         case "2":
             Console.WriteLine("Вы вышли из магазина");
             break;
+        case "3":
+            string? buy_poison;
+            Console.WriteLine(" В наличие есть зелье лечения, оно лечит на 50 здоровья и стоит 10 монет, желаете купить? ");
+            Console.WriteLine("Если хотите купить - введите 1");
+            buy_poison = Console.ReadLine();
+            if (buy_poison == "1")
+            { 
+                if (Player.Coins >= 10)
+                {
+                    Player.Coins -= 10;
+                    potion.count += 1;
+                    break;
+                }
+                else if (Player.Coins < potion.price)
+                {
+                    Console.WriteLine("У вас недостаточно средств");
+                    break;
+                }
+
+                
+            }
+
+            break;
+
         default:
             Console.WriteLine("Вы ввели неверный ввод");
             break;
@@ -149,8 +215,7 @@ while (true)
         
     }
     Console.WriteLine();
-    Console.WriteLine();
-
+  
 }
 
 Exit:;
